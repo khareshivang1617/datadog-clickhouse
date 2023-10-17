@@ -1,4 +1,4 @@
-module datadog-clickhouse
+module github.com/khareshivang1617/datadog-clickhouse
 
 go 1.19
 
