@@ -1,4 +1,4 @@
-package main
+package conn
 
 import (
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
