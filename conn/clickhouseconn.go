@@ -2,7 +2,6 @@ package conn
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 )
@@ -20,7 +19,6 @@ func (ch *ClickhouseConnection) ServerVersion() (*driver.ServerVersion, error) {
 }
 
 func (ch *ClickhouseConnection) Select(ctx context.Context, dest any, query string, args ...any) error {
-	fmt.Println("SELECTQUERY: ", query)
 	span := StartSpanForQuery(ctx, query)
 	defer span.Finish()
 	return ch.Conn.Select(ctx, dest, query, args...)

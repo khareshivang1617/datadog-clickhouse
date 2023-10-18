@@ -13,6 +13,7 @@ func StartSpanForQuery(ctx context.Context, query string) ddtrace.Span {
 		"clickhouse.query",
 		tracer.Tag("db.statement", query),
 		tracer.ResourceName(query),
+		tracer.Measured(),
 	)
 	return span
 }
@@ -23,6 +24,7 @@ func ConnOpenSpan() ddtrace.Span {
 		tracer.ResourceName("Connect"),
 		tracer.Tag("db.statement", "Connect"),
 		tracer.Tag("sql.query_type", "Connect"),
+		tracer.Measured(),
 	)
 	return span
 }
@@ -33,6 +35,7 @@ func ConnCloseSpan() ddtrace.Span {
 		tracer.ResourceName("Close"),
 		tracer.Tag("db.statement", "Close"),
 		tracer.Tag("sql.query_type", "Close"),
+		tracer.Measured(),
 	)
 	return span
 }
@@ -44,6 +47,7 @@ func PingSpan(ctx context.Context) ddtrace.Span {
 		tracer.ResourceName("Ping"),
 		tracer.Tag("db.statement", "Ping"),
 		tracer.Tag("sql.query_type", "Ping"),
+		tracer.Measured(),
 	)
 	return span
 }
