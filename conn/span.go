@@ -52,3 +52,9 @@ func PingSpan(ctx context.Context) ddtrace.Span {
 	)
 	return span
 }
+
+func FinishSpan(span ddtrace.Span, err error) {
+	span.Finish(func(cfg *ddtrace.FinishConfig) {
+		cfg.Error = err
+	})
+}

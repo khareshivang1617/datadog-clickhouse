@@ -7,8 +7,9 @@ import (
 )
 
 func ClickhouseConnWithDatadogTracer(options *clickhouse.Options) (driver.Conn, error) {
+	var err error
 	span := ConnOpenSpan()
-	defer span.Finish()
+	defer FinishSpan(span, err)
 	chDriverConn, err := clickhouse.Open(options)
 	return &ClickhouseConnection{Conn: chDriverConn}, err
 }

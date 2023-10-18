@@ -18,50 +18,56 @@ func (ch *ClickhouseConnection) ServerVersion() (*driver.ServerVersion, error) {
 	return ch.Conn.ServerVersion()
 }
 
-func (ch *ClickhouseConnection) Select(ctx context.Context, dest any, query string, args ...any) error {
+func (ch *ClickhouseConnection) Select(ctx context.Context, dest any, query string, args ...any) (err error) {
 	span := StartSpanForQuery(ctx, query)
-	defer span.Finish()
-	return ch.Conn.Select(ctx, dest, query, args...)
+	defer FinishSpan(span, err)
+	err = ch.Conn.Select(ctx, dest, query, args...)
+	return
 }
 
-func (ch *ClickhouseConnection) Query(ctx context.Context, query string, args ...any) (driver.Rows, error) {
+func (ch *ClickhouseConnection) Query(ctx context.Context, query string, args ...any) (rows driver.Rows, err error) {
 	span := StartSpanForQuery(ctx, query)
-	defer span.Finish()
-	return ch.Conn.Query(ctx, query, args...)
+	defer FinishSpan(span, err)
+	rows, err = ch.Conn.Query(ctx, query, args...)
+	return
 }
 
-func (ch *ClickhouseConnection) QueryRow(ctx context.Context, query string, args ...any) driver.Row {
+func (ch *ClickhouseConnection) QueryRow(ctx context.Context, query string, args ...any) (row driver.Row) {
 	span := StartSpanForQuery(ctx, query)
-	defer span.Finish()
-	return ch.Conn.QueryRow(ctx, query, args...)
+	defer FinishSpan(span, row.Err())
+	row = ch.Conn.QueryRow(ctx, query, args...)
+	return
 }
 
 func (ch *ClickhouseConnection) PrepareBatch(ctx context.Context, query string, opts ...driver.PrepareBatchOption) (driver.Batch, error) {
 	return ch.Conn.PrepareBatch(ctx, query, opts...)
 }
 
-func (ch *ClickhouseConnection) Exec(ctx context.Context, query string, args ...any) error {
+func (ch *ClickhouseConnection) Exec(ctx context.Context, query string, args ...any) (err error) {
 	span := StartSpanForQuery(ctx, query)
-	defer span.Finish()
-	return ch.Conn.Exec(ctx, query, args...)
+	defer FinishSpan(span, err)
+	err = ch.Conn.Exec(ctx, query, args...)
+	return
 }
 
 func (ch *ClickhouseConnection) AsyncInsert(ctx context.Context, query string, wait bool, args ...any) error {
 	return ch.Conn.AsyncInsert(ctx, query, wait, args...)
 }
 
-func (ch *ClickhouseConnection) Ping(ctx context.Context) error {
+func (ch *ClickhouseConnection) Ping(ctx context.Context) (err error) {
 	span := PingSpan(ctx)
-	defer span.Finish()
-	return ch.Conn.Ping(ctx)
+	defer FinishSpan(span, err)
+	err = ch.Conn.Ping(ctx)
+	return
 }
 
 func (ch *ClickhouseConnection) Stats() driver.Stats {
 	return ch.Conn.Stats()
 }
 
-func (ch *ClickhouseConnection) Close() error {
+func (ch *ClickhouseConnection) Close() (err error) {
 	span := ConnCloseSpan()
-	defer span.Finish()
-	return ch.Conn.Close()
+	defer FinishSpan(span, err)
+	err = ch.Conn.Close()
+	return
 }
