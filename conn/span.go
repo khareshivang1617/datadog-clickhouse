@@ -3,6 +3,7 @@ package conn
 import (
 	"context"
 
+	"github.com/khareshivang1617/datadog-clickhouse/constants"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
@@ -10,8 +11,8 @@ import (
 func StartSpanForQuery(ctx context.Context, query string) ddtrace.Span {
 	span, _ := tracer.StartSpanFromContext(
 		ctx,
-		"clickhouse.query",
-		tracer.Tag("db.statement", query),
+		constants.DDTagQueryOperationName,
+		tracer.Tag(constants.DDTagDBStatement, query),
 		tracer.ResourceName(query),
 		tracer.Measured(),
 	)
@@ -20,10 +21,10 @@ func StartSpanForQuery(ctx context.Context, query string) ddtrace.Span {
 
 func ConnOpenSpan() ddtrace.Span {
 	span := tracer.StartSpan(
-		"clickhouse.query",
+		constants.DDTagQueryOperationName,
 		tracer.ResourceName("Connect"),
-		tracer.Tag("db.statement", "Connect"),
-		tracer.Tag("sql.query_type", "Connect"),
+		tracer.Tag(constants.DDTagDBStatement, "Connect"),
+		tracer.Tag(constants.DDTagSqlQueryType, "Connect"),
 		tracer.Measured(),
 	)
 	return span
@@ -31,10 +32,10 @@ func ConnOpenSpan() ddtrace.Span {
 
 func ConnCloseSpan() ddtrace.Span {
 	span := tracer.StartSpan(
-		"clickhouse.query",
+		constants.DDTagQueryOperationName,
 		tracer.ResourceName("Close"),
-		tracer.Tag("db.statement", "Close"),
-		tracer.Tag("sql.query_type", "Close"),
+		tracer.Tag(constants.DDTagDBStatement, "Close"),
+		tracer.Tag(constants.DDTagSqlQueryType, "Close"),
 		tracer.Measured(),
 	)
 	return span
@@ -43,10 +44,10 @@ func ConnCloseSpan() ddtrace.Span {
 func PingSpan(ctx context.Context) ddtrace.Span {
 	span, _ := tracer.StartSpanFromContext(
 		ctx,
-		"clickhouse.query",
+		constants.DDTagQueryOperationName,
 		tracer.ResourceName("Ping"),
-		tracer.Tag("db.statement", "Ping"),
-		tracer.Tag("sql.query_type", "Ping"),
+		tracer.Tag(constants.DDTagDBStatement, "Ping"),
+		tracer.Tag(constants.DDTagSqlQueryType, "Ping"),
 		tracer.Measured(),
 	)
 	return span
