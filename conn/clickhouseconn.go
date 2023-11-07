@@ -34,7 +34,14 @@ func (ch *ClickhouseConnection) Query(ctx context.Context, query string, args ..
 
 func (ch *ClickhouseConnection) QueryRow(ctx context.Context, query string, args ...any) (row driver.Row) {
 	span := StartSpanForQuery(ctx, query)
-	defer FinishSpan(span, row.Err())
+	defer func() {
+		if row != nil {
+			FinishSpan(span, row.Err())
+		} else {
+			FinishSpan(span, nil)
+		}
+	}()
+
 	row = ch.Conn.QueryRow(ctx, query, args...)
 	return
 }
